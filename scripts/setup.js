@@ -11,7 +11,7 @@ const rl = readline.createInterface({
 // Function to ask for user input with a default value
 const askQuestion = (query, defaultValue) => {
   return new Promise((resolve) => {
-    rl.question(`${query} (${defaultValue}): `, (answer) => {
+    rl.question(`${query} [${defaultValue}] (press Enter to confirm): `, (answer) => {
       resolve(answer || defaultValue);
     });
   });
@@ -22,6 +22,25 @@ const replaceInFile = (filePath, searchText, replaceText) => {
   let content = fs.readFileSync(filePath, 'utf8');
   content = content.replace(new RegExp(searchText, 'g'), replaceText);
   fs.writeFileSync(filePath, content);
+};
+
+// Function to update the README title
+const updateReadmeTitle = (slug) => {
+  const readmePath = 'README.md';
+  const newTitle = `# ${slug} | AG & Water Desk Svelte Template`;
+  let content = fs.readFileSync(readmePath, 'utf8');
+  content = content.replace(/^# AG & Water Desk Svelte Template/m, newTitle);
+  fs.writeFileSync(readmePath, content);
+};
+
+// Function to check if a git remote exists
+const remoteExists = (remoteName) => {
+  try {
+    execSync(`git remote get-url ${remoteName}`, { stdio: 'ignore' });
+    return true;
+  } catch (error) {
+    return false;
+  }
 };
 
 async function setupProject() {
@@ -45,30 +64,39 @@ async function setupProject() {
     console.log('📝 Updating index.html...');
     replaceInFile('index.html', '\\[insert slug\\]', slug);
 
+    // Update README title
+    console.log('📝 Updating README.md title...');
+    updateReadmeTitle(slug);
+
     // Install dependencies
     console.log('\n📦 Installing dependencies...');
     execSync('npm install', { stdio: 'inherit' });
 
-    // Initialize git
-    console.log('\n🔧 Setting up git...');
-    execSync('git init', { stdio: 'inherit' });
-    execSync('git add .', { stdio: 'inherit' });
-    execSync('git commit -m "Initial commit"', { stdio: 'inherit' });
+    // Check if git is already initialized
+    if (!fs.existsSync('.git')) {
+      // Initialize git
+      console.log('\n🔧 Setting up git...');
+      execSync('git init', { stdio: 'inherit' });
+      execSync('git add .', { stdio: 'inherit' });
+      execSync('git commit -m "Initial commit"', { stdio: 'inherit' });
+    } else {
+      console.log('\n🔧 Git is already initialized. Skipping git setup.');
+    }
 
     // Set up remote repository
-    const repoName = await askQuestion('\nEnter the GitHub repository name (e.g., "water-quality-2024")', slug);
+    const repoName = await askQuestion('\nEnter the GitHub repository name', slug);
     if (!repoName) {
       throw new Error('Repository name is required');
     }
 
     const remoteUrl = `git@github.com:agwaterdesk/${repoName}.git`;
-    execSync(`git remote add origin ${remoteUrl}`, { stdio: 'inherit' });
+    if (remoteExists('origin')) {
+      console.log('\n🔧 Remote origin already exists. Skipping remote setup.');
+    } else {
+      execSync(`git remote add origin ${remoteUrl}`, { stdio: 'inherit' });
+    }
 
     console.log('\n✨ Project setup complete!');
-    console.log('\nNext steps:');
-    console.log('1. Create a new repository on GitHub named:', repoName);
-    console.log('2. Push your code: git push -u origin main');
-    console.log('3. Start development: npm run dev');
 
   } catch (error) {
     console.error('\n❌ Error during setup:', error.message);
