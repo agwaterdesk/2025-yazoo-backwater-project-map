@@ -7,6 +7,9 @@ const config = {
       prependData: `@use "./src/scss/abstracts" as *;`,
     },
   }),
+  compilerOptions: {
+    runes: true,
+  },
 };
 
 export default config;

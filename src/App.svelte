@@ -1,6 +1,7 @@
 <script>
   import Window from "./components/Window.svelte";
-
+  import Map from "./components/Map.svelte";
+  import Legend from "./components/Legend.svelte";
   // Handle responsive iframes for embeds
   import pym from "pym.js";
 
@@ -19,16 +20,23 @@
 <Window />
 <!-- Outer div must have class 'chart-container' don't change -->
 <div class="chart-container">
-  <h1 class="headline">TKTKTK</h1>
+  <h1 class="headline">New pumping station approved for Mississippi Delta</h1>
 
-  <p class="dek"></p>
+  <p class="dek">
+    The Army Corps' Yazoo Pumps project aims to reduce chronic flooding in the
+    backwater area, but environmentalists warn it could damage 90,000 acres of
+    wetlands.
+  </p>
   <p class="sr-only"></p>
 
-  <div id="g-viz"></div>
+  <div id="g-viz">
+    <Legend />
+    <Map />
+  </div>
 
   {#if includeCredit}
     <div class="credit">
-      Data: TKTK; Graphic by Jared Whalen /
+      Data: <a href="https://www.mvk.usace.army.mil/Missions/Programs-and-Project-Management/Yazoo-Backwater/" target="_blank">U.S. Army Corps of Engineers</a>; Graphic by Jared Whalen /
       <a target="_blank" href="https://agwaterdesk.org/">Ag & Water Desk</a>
     </div>
   {/if}
