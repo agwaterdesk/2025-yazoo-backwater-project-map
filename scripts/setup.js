@@ -1,15 +1,20 @@
 import fs from 'fs';
 import { execSync } from 'child_process';
 import readline from 'readline';
+import path from 'path';
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-// Function to ask for user input
-const askQuestion = (query) => {
-  return new Promise((resolve) => rl.question(query, resolve));
+// Function to ask for user input with a default value
+const askQuestion = (query, defaultValue) => {
+  return new Promise((resolve) => {
+    rl.question(`${query} (${defaultValue}): `, (answer) => {
+      resolve(answer || defaultValue);
+    });
+  });
 };
 
 // Function to replace text in a file
@@ -23,8 +28,11 @@ async function setupProject() {
   try {
     console.log('🚀 Starting project setup...\n');
 
-    // Get project slug from user
-    const slug = await askQuestion('Enter your project slug (e.g., "water-quality-2024"): ');
+    // Get the default project slug from the folder name
+    const defaultSlug = path.basename(process.cwd());
+
+    // Get project slug from user, with default value
+    const slug = await askQuestion('Enter your project slug', defaultSlug);
     if (!slug) {
       throw new Error('Project slug is required');
     }
@@ -48,7 +56,7 @@ async function setupProject() {
     execSync('git commit -m "Initial commit"', { stdio: 'inherit' });
 
     // Set up remote repository
-    const repoName = await askQuestion('\nEnter the GitHub repository name (e.g., "water-quality-2024"): ');
+    const repoName = await askQuestion('\nEnter the GitHub repository name (e.g., "water-quality-2024")', slug);
     if (!repoName) {
       throw new Error('Repository name is required');
     }
