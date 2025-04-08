@@ -27,7 +27,13 @@
     backwater area, but environmentalists warn it could damage 90,000 acres of
     wetlands.
   </p>
-  <p class="sr-only"></p>
+  <p class="sr-only">
+    Map of the Yazoo Backwater Study Area in the Mississippi Delta, showing
+    locations of control structures including the Steele Bayou drainage flood
+    gate. The map highlights the area affected by the Army Corps' Yazoo Pumps
+    project, which aims to reduce flooding but could impact 90,000 acres of
+    wetlands. An inset shows the location of the study area within Mississippi.
+  </p>
 
   <div id="g-viz">
     <Legend />
@@ -36,7 +42,10 @@
 
   {#if includeCredit}
     <div class="credit">
-      Data: <a href="https://www.mvk.usace.army.mil/Missions/Programs-and-Project-Management/Yazoo-Backwater/" target="_blank">U.S. Army Corps of Engineers</a>; Graphic by Jared Whalen /
+      Data: <a
+        href="https://www.mvk.usace.army.mil/Missions/Programs-and-Project-Management/Yazoo-Backwater/"
+        target="_blank">U.S. Army Corps of Engineers</a
+      >; Graphic by Jared Whalen /
       <a target="_blank" href="https://agwaterdesk.org/">Ag & Water Desk</a>
     </div>
   {/if}
